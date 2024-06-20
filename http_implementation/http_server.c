@@ -28,19 +28,20 @@ int main() {
 
     char response_data[1024];
 
-    char* source = NULL; 
+    // read the entire, multi-line file
 
+    char* source = NULL; 
     if (fseek(html_data, 0L, SEEK_END) == 0) { // move the pointer to the end of the file, returns 0 if successful, hence the if-statement
         long buff_size = ftell(html_data); // ftell tells us how long the file is IF the pointer is at the end of the file 
-        source = malloc(sizeof(buff_size + 1));
+        source = malloc(sizeof(buff_size + 1)); // get memory for the size of the buffer/size of the file itself 
 
-        if (fseek(html_data, 0L, SEEK_SET) == 0) {
+        if (fseek(html_data, 0L, SEEK_SET) == 0) { // brings pointer to beginning of the file (SEEK_SET) and start reading the file from there 
             size_t newLen = fread(source, sizeof(char), buff_size, html_data); // fread returns a size_t, which is the num of elements that are read succesfully from the file
-            // fread() writes the memoru from the file into the buffer, in this case "source"
+            // fread() writes the memory from the file into the buffer, in this case "source", the sizeof(char) parameter tells us the size of each element in the file
         }
     }
 
-    fclose(html_data);
+    fclose(html_data); // close file
 
     
 
@@ -60,7 +61,7 @@ int main() {
     // define the address
     struct sockaddr_in server_address;
     server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(MY_PORT); 
+    server_address.sin_port = htons(MY_PORT); // htons() converts the port number into a different format so that the server_address structure can understand it
     server_address.sin_addr.s_addr = INADDR_ANY;
 
     bind(server_socket, (struct sockaddr*) &server_address, sizeof(server_address));
@@ -68,6 +69,10 @@ int main() {
     listen(server_socket, 5);
 
     int client_socket;
+
+    printf(
+        "This server's address information is: \n socket info: %d\ns port info: %d\n server ip: %d", 
+        server_socket, MY_PORT, server_address.sin_addr.s_addr);
 
     while (1) {
         client_socket = accept(server_socket, NULL, NULL);
